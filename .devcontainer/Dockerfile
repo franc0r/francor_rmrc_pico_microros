@@ -9,7 +9,7 @@ RUN apt-get update \
 RUN useradd -u 1000 -ms /bin/bash vscode \
     && usermod -aG sudo vscode  \
     && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    && echo "export PICO_SDK_PATH=/workspaces/rmrc_pico_microros/pico-sdk" >> /home/vscode/.bashrc 
+    && echo "export PICO_SDK_PATH=/workspaces/rmrc_pico_microros/external/pico-sdk" >> /home/vscode/.bashrc 
 
 WORKDIR /opt/
 
