@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 RUN apt-get update \
     && apt-get install -y \
     sudo cmake doxygen wget bzip2 \
-    git python3 nano g++ \
+    git python3 nano g++ clangd \
     && apt-get clean
 
 RUN useradd -u 1000 -ms /bin/bash vscode \

@@ -1,0 +1,21 @@
+{
+    "configurations": [
+      {
+        "name": "Linux",
+        "intelliSenseMode": "clang-x64",
+        "includePath": [
+          "/opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/include"
+        ],
+        "defines": [],
+        "compilerPath": "/usr/bin/clang",
+        "cStandard": "c11",
+        "cppStandard": "c++17",
+        "browse": {
+          "path": ["${workspaceFolder}"],
+          "limitSymbolsToIncludedHeaders": true,
+          "databaseFilename": ""
+        }
+      }
+    ],
+    "version": 4
+  }
