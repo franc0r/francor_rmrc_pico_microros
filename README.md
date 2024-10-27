@@ -3,5 +3,9 @@
 This project is based on [micro_ros_raspberrypi_pico_sdk](https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git).
 
 
+# Dependencies
 
-ros2 topic pub /pico_led_subscriber std_msgs/msg/Int32 '{data: 0}'
+To use this project you need:
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Docker CE](https://docs.docker.com/engine/install/ubuntu/)
+
