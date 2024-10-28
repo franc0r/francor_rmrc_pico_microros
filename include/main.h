@@ -38,7 +38,7 @@
 
 /* IMPORTANT: Update this number to the number of callback functions
    e.g. one subscription + one timer handle = 2 handles */
-#define ROS_NUM_HANDLES           1
+#define ROS_NUM_HANDLES           2
 
 #define STARTUP_CONN_TIMEOUT_MS 1000
 #define STARTUP_CONN_ATTEMPTS   120

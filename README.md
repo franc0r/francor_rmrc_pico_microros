@@ -351,7 +351,7 @@ std_msgs__msg__Bool  g_pico_en_blink_msg;
 rclc_subscription_init_best_effort(
   &g_pico_en_blink_subs, 
   &g_uros_base.node,
-  ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool)
+  ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
   "pico_en_blinking");
 
 /*
@@ -388,12 +388,10 @@ docker run -it --rm -v /dev:/dev --privileged --net=host --name=microros microro
 # Connect to running docker container
 docker exec -it microros /bin/bash  
 
-# Publish message
+# Publish message to switch LED off
 ros2 topic pub /pico_en_blinking std_msgs/msg/Bool  "{data: 0}"
 
+# Publish message to switch LED on
+ros2 topic pub /pico_en_blinking std_msgs/msg/Bool  "{data: 1}"
+
 ```
-
-# Lesson 04 - Add CO2 sensor via ADC
-
-TBD.
-

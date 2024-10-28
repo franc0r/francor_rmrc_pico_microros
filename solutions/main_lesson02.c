@@ -13,6 +13,7 @@
 #include "main.h"
 #include "pico_ros_basic.h"
 
+#include <std_msgs/msg/bool.h>
 
 // Variables ------------------------------------------------------------------
 
@@ -24,10 +25,18 @@ rcl_timer_t g_timer;
 
 uint g_led_status;
 
+/* ROS publisher to publish LED state */
+rcl_publisher_t g_led_status_pub;
+std_msgs__msg__Bool g_led_status_msg;
+
 // Pub / Sub / Callbacks ------------------------------------------------------
 
 void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 {
+    /* Publish LED state */
+    g_led_status_msg.data = g_led_status;
+    rcl_publish(&g_led_status_pub, &g_led_status_msg, NULL);
+
     /* Blink LED */
     gpio_put(PI_PICO_LED_PIN, g_led_status);
     g_led_status = ~g_led_status;
@@ -61,6 +70,12 @@ int main()
 
     /* Add timer to executor */
     rclc_executor_add_timer(&g_uros_base.executor, &g_timer);
+
+    /* Create publisher */
+    rclc_publisher_init_default(&g_led_status_pub, 
+                                &g_uros_base.node,
+                                ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool), 
+                                "pico_led_status");
 
     /* Spin */
     while (true)
