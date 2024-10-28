@@ -2,23 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "CMake Build",
-            "type": "shell",
-            "command": "cmake ..",
-            "args": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/build"
-            },
-            "detail": "Generated task for building the project"
-        },
-        {
             "label": "Build",
             "type": "shell",
-            "command": "make -j 8 && cp ./compile_commands.json ../",
+            "command": "cmake .. && make -j 8 && cp ./compile_commands.json ../",
             "args": [],
             "group": {
                 "kind": "build",

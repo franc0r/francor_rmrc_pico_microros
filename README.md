@@ -31,8 +31,7 @@ The project contains:
    This will create the container and open the project in it, which may take a few minutes.
 4. Open a terminal and initialize the submodules via ```git submodule update --init --recursive```
 5. Run a test build via ```CTRL + SHIFT + B``` and selection:
-   1. ```CMake Build``` Create cmake files
-   2. ```Build``` Build binaries
+   1. ```Build``` Builds binaries
    3. ```Clean``` Removes binaries
    4. ```Clean All``` Removes complete content of build directory
 
@@ -258,22 +257,46 @@ In the next lesson lets add a publisher to our application!
 
 **Create a publisher with the topic name "pico_led_status". Which publishs the LED status as a Int32 value every time the LED toggles its state.**
 
-I will not give you the direct solution, only the types and functions
-necessary to archive it.
+You will not get a complete solution, but the variables and functions necessary
+to add the required functionality.
 
-If you need more information ask CoPilot or Google, this will help you a lot ;-)
 
 ```C
 /* Includes you need: */
 #include <std_msgs/msg/bool.h>
 
-/* Types you need */
-rcl_publisher_t
-std_msgs__msg__Bool
+/* Variables you need */
+rcl_publisher_t g_led_status_pub;
+std_msgs__msg__Bool g_led_status_msg;
 
-/* Functions you need */
-rclc_publisher_init_default()
-rcl_publish()
+/* To initialize the publisher you need the  init function 
+ * We initialize the publisher g_led_status_pub, which is the
+ * first argument of the function.
+ * The publisher is registered to our pico node, which is a member
+ * of the g_uros_base structure.
+ * The third argument describes the message type.
+ * At the end we specify the topic which is used for publishing
+ */
+rclc_publisher_init_default(
+  &g_led_status_pub, 
+  &g_uros_base.node,
+  ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool), 
+  "pico_led_status");
+
+
+/*
+ * After initialization we are ready to publish the messages
+ * for this we use the publish function.
+ * The first argument is the publisher itself and the second
+ * argument is the message.
+ */
+rcl_publish(&g_led_status_pub, &g_led_status_msg, NULL);
+
+/*
+ * If you want to change the data of the message you have 
+ * to access the data member
+ */
+ g_led_status_msg.data = false;
 
 ```
 
@@ -298,21 +321,57 @@ In the next lesson lets extend the firmware furthermore:
 
 ```C
 
-/* Includes you need */
-#include <std_msgs/msg/bool.h>
-
 /* Types you need */
-rcl_subscription_t
-std_msgs__msg__Bool
+rcl_subscription_t   g_pico_en_blink_subs;
+std_msgs__msg__Bool  g_pico_en_blink_msg;
 
 /* Functions you need */
-rclc_subscription_init_best_effort()
-rclc_executor_add_subscription();
 
-/* Futhermore you need a callback function
-   which is called when a message arrives from 
-   the ros network */
-void pico_en_blinking_callback(const void *msgin);
+
+/*
+ * We need a callback function which is called, when
+ * a new message arrives from the ros2 network.
+ * This subscribers enables or disables our LED blinking
+ */
+ void pico_en_blinking_callback(const void *msgin)
+ {
+   /* Convert message to the corrent type */
+   const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
+
+   /* Copy message data to our variable */
+   g_pico_en_blink_msg.data = msg->data;
+ }
+
+/*
+ * To initialize the subscription we have to call the init 
+ * function below.
+ * Besides the function name the arguments are structured the
+ * same way as inside the publisher function
+ */
+rclc_subscription_init_best_effort(
+  &g_pico_en_blink_subs, 
+  &g_uros_base.node,
+  ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool)
+  "pico_en_blinking");
+
+/*
+ * A big difference between the subscription and publisher ist
+ * that we have to register our subscription to the executor. 
+ * The executor handles arriving messages and is calling our
+ * callback function every time a message arrives.
+ */
+rclc_executor_add_subscription(
+  &g_uros_base.executor,      // The executor is member of our g_uros_base structure
+  &g_pico_en_blink_subs,      // We need to tell the executor which subscriber he shall use
+  &g_pico_en_blink_msg,       // The subscriber needs to now the message
+  &pico_en_blinking_callback, // Here we register the callback function to our subscriber
+  ON_NEW_DATA);               // Here we tell the executor that he shall execute the callback function every time a message arrives
+
+/* Take care! At the start of this workshop i told you that the define
+* ROS_NUM_HANDLES has to be increased, when we register a new function to the executor!
+* So now we have to set ROS_NUM_HANDLES to the value 2
+*/
+#define ROS_NUM_HANDLES 2
 
 ```
 
