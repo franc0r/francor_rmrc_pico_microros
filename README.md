@@ -277,6 +277,19 @@ rcl_publish()
 
 ```
 
+To test your firmware you can start the docker containers again, if not already running:
+
+```bash
+# Start container
+docker run -it --rm -v /dev:/dev --privileged --net=host --name=microros microros/micro-ros-agent:jazzy serial --dev /dev/ttyACM0 -b 115200
+
+# Connect to running docker container
+docker exec -it microros /bin/bash  
+
+# Check if you can see the messages on the topic
+ros2 topic echo /pico_led_status
+```
+
 # Lesson 03 - Add a subscription
 
 In the next lesson lets extend the firmware furthermore:
@@ -306,13 +319,20 @@ void pico_en_blinking_callback(const void *msgin);
 You can use the commands inside your docker container
 to publish a message to the network
 
+
+To test your firmware you can start the docker containers again, if not already running:
+
 ```bash
+# Start container
+docker run -it --rm -v /dev:/dev --privileged --net=host --name=microros microros/micro-ros-agent:jazzy serial --dev /dev/ttyACM0 -b 115200
+
+# Connect to running docker container
+docker exec -it microros /bin/bash  
+
+# Publish message
 ros2 topic pub /pico_en_blinking std_msgs/msg/Bool  "{data: 0}"
 
 ```
-
-*Note:*
-
 
 # Lesson 04 - Add CO2 sensor via ADC
 
