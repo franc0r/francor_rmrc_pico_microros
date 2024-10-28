@@ -25,6 +25,13 @@ typedef struct {
 
 // Functions ------------------------------------------------------------------
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void setupROS(pico_uros_base_t* p_uros_base);
+
+#ifdef __cplusplus
+}
+#endif
 
  #endif /* PICO_ROS_BASIC_H__ */

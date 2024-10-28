@@ -13,6 +13,9 @@
 #include "main.h"
 #include "pico_ros_basic.h"
 
+#include <std_msgs/msg/int32.h>
+
+#include "distance_sensor.h"
 
 // Variables ------------------------------------------------------------------
 
@@ -24,6 +27,11 @@ rcl_timer_t g_timer;
 
 uint g_led_status;
 
+DistanceSensor* pDistanceSensor;
+
+rcl_publisher_t g_distance_publisher;
+std_msgs__msg__Int32 g_distance_msg;
+
 // Pub / Sub / Callbacks ------------------------------------------------------
 
 void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
@@ -31,6 +39,11 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     /* Blink LED */
     gpio_put(PI_PICO_LED_PIN, g_led_status);
     g_led_status = ~g_led_status;
+
+    g_distance_msg.data = pDistanceSensor->distance;
+    rcl_publish(&g_distance_publisher, &g_distance_msg, NULL);
+
+    pDistanceSensor->TriggerRead();
 }
 
 // Main -----------------------------------------------------------------------
@@ -52,6 +65,9 @@ int main()
     gpio_set_dir(PI_PICO_LED_PIN, GPIO_OUT);
     gpio_put(PI_PICO_LED_PIN, g_led_status);
 
+    //pio_gpio_init(pio0, 5);
+    //pio_gpio_init(pio0, 6);
+
     /* Create timer */
     rclc_timer_init_default2(&g_timer, 
                              &g_uros_base.support,
@@ -61,6 +77,15 @@ int main()
 
     /* Add timer to executor */
     rclc_executor_add_timer(&g_uros_base.executor, &g_timer);
+
+    DistanceSensor hcsr04{pio0, 0, 5};
+    pDistanceSensor = &hcsr04;
+
+    /* Create distance publisher */
+    rclc_publisher_init_default(&g_distance_publisher,
+                                &g_uros_base.node,
+                                ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+                                "distance");
 
     /* Spin */
     while (true)

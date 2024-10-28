@@ -10,21 +10,29 @@ set(CMAKE_CXX_STANDARD 17)
 
 pico_sdk_init()
 
-link_directories(${CMAKE_SOURCE_DIR}/external/libmicroros)
+add_subdirectory(external/pico-distance-sensor/src)
+
+link_directories(
+    ${CMAKE_SOURCE_DIR}/external/libmicroros
+)
 
 add_executable(pico_rmrc_uros
-    src/main.c
+    src/main.cpp
     src/pico_ros_basic.c
     src/pico_uart_transport.c
 )
 
 target_link_libraries(pico_rmrc_uros
     pico_stdlib
+    hardware_pio 
+    hardware_irq
+    distance-sensor 
     microros
 )
 
 target_include_directories(pico_rmrc_uros PUBLIC
     external/libmicroros/include
+    external/pico-distance-sensor/include
     include/
 )
 
