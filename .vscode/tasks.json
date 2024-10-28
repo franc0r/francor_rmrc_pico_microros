@@ -15,7 +15,6 @@
             },
             "detail": "Generated task for building the project"
         },
-        ,
         {
             "label": "Clean",
             "type": "shell",
@@ -29,7 +28,7 @@
                 "cwd": "${workspaceFolder}/build"
             },
             "detail": "Generated task for cleaning the project"
-        }
+        },
         {
             "label": "Clean All",
             "type": "shell",
@@ -43,6 +42,16 @@
                 "cwd": "${workspaceFolder}"
             },
             "detail": "Generated task for cleaning the project"
+        },
+        {
+            "label": "Flash",
+            "type": "shell",
+            "command": "cp",
+            "args": ["build/pico_rmrc_uros.uf2", "/var/run/media/vscode/RPI-RP2"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
         }
     ]
 }

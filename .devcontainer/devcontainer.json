@@ -14,5 +14,8 @@
                 "llvm-vs-code-extensions.vscode-clangd"
             ]
         }
-    }
+    },
+    "mounts": [
+        "source=/var/run/media/${localEnv:USER},target=/var/run/media/vscode,type=bind,consistency=cached"
+    ]
 }
