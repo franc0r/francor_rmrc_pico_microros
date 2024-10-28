@@ -13,8 +13,6 @@
 #include "main.h"
 #include "pico_ros_basic.h"
 
-#include <std_msgs/msg/int32.h>
-#include <rcl_interfaces/msg/log.h>
 
 // Variables ------------------------------------------------------------------
 
@@ -55,7 +53,7 @@ int main()
     /* Create timer */
     rclc_timer_init_default2(&g_timer, 
                              &g_uros_base.support,
-                             RCL_MS_TO_NS(500),
+                             RCL_MS_TO_NS(LED_TIMER_PERIOD_MS),
                              timer_callback,
                              true);
 

@@ -14,16 +14,19 @@
 #define PICO_RMRC_UROS__
 
  // Includes -------------------------------------------------------------------
+
+/* Common includes */
 #include <stdio.h>
 #include <string.h>
 
+/* micro-ROS related includes */
 #include <rcl/rcl.h>
 #include <rcl/error_handling.h>
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
 #include <rmw_microros/rmw_microros.h>
 
-
+/* Raspberry Pi Pico related includes */
 #include "pico/stdlib.h"
 #include "pico/bootrom.h"
 #include "hardware/gpio.h"
@@ -39,6 +42,8 @@
 
 #define STARTUP_CONN_TIMEOUT_MS 1000
 #define STARTUP_CONN_ATTEMPTS   120
+
+#define LED_TIMER_PERIOD_MS     500
 
 #define PI_PICO_LED_PIN         25
 #define PI_PICO_CO2_ADC_PIN     26
