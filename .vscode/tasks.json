@@ -33,7 +33,7 @@
         {
             "label": "Clean",
             "type": "shell",
-            "command": "rm pico_rmrc_uros.* && rm pico_flas_region_ld",
+            "command": "rm pico_rmrc_uros.* || rm pico_flash_region.ld",
             "args": [],
             "group": {
                 "kind": "build",

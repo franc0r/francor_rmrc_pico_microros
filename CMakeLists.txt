@@ -20,7 +20,6 @@ add_executable(pico_rmrc_uros
 
 target_link_libraries(pico_rmrc_uros
     pico_stdlib
-    hardware_adc
     microros
 )
 
@@ -28,9 +27,6 @@ target_include_directories(pico_rmrc_uros PUBLIC
     external/libmicroros/include
     include/
 )
-
-# Add post compilation task to copy compile_commands.json to workspace
-
 
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")

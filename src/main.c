@@ -22,45 +22,15 @@ pico_uros_base_t g_uros_base;
 
 rcl_timer_t g_timer;
 
-rcl_subscription_t g_led_subs;
-std_msgs__msg__Int32 g_led_msg;
-
-rcl_publisher_t    g_co2_pub;
-std_msgs__msg__Int32 g_co2_msg;
-
 uint g_led_status;
 
 // Pub / Sub / Callbacks ------------------------------------------------------
 
 void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 {
-    if(g_led_msg.data == 1)
-    {
-        gpio_put(PI_PICO_LED_PIN, g_led_status);
-        g_led_status = ~g_led_status;
-    }
-    else
-    {
-        gpio_put(PI_PICO_LED_PIN, 0);
-    }
-
-    /* Publish adc value */
-    g_co2_msg.data = (int32_t)adc_read();
-    rcl_ret_t ret = rcl_publish(&g_co2_pub, &g_co2_msg, NULL);
-    if (ret != RCL_RET_OK)
-    {
-        /* Error */
-    }
-}
-
-/**
-  * @brief Subscriber callback function
-  */
-void led_subscriber_callback(const void *msgin)
-{
-    const std_msgs__msg__Int32 *msg = (const std_msgs__msg__Int32 *)msgin;
-    
-    g_led_msg.data = msg->data;
+    /* Blink LED */
+    gpio_put(PI_PICO_LED_PIN, g_led_status);
+    g_led_status = ~g_led_status;
 }
 
 // Main -----------------------------------------------------------------------
@@ -71,8 +41,7 @@ void led_subscriber_callback(const void *msgin)
 int main()
 {
     /* Initialize variables */
-    //memset((void*)&g_uros_base, 0, sizeof(pico_uros_base_t));
-    g_led_msg.data = 0;
+    memset((void*)&g_uros_base, 0, sizeof(pico_uros_base_t));
     g_led_status = 0;
 
     /* Initialize the micro-ROS stack */
@@ -83,11 +52,6 @@ int main()
     gpio_set_dir(PI_PICO_LED_PIN, GPIO_OUT);
     gpio_put(PI_PICO_LED_PIN, g_led_status);
 
-    /* Initialize ADC */
-    adc_init();
-    adc_gpio_init(PI_PICO_CO2_ADC_PIN);
-    adc_select_input(0);
-
     /* Create timer */
     rclc_timer_init_default2(&g_timer, 
                              &g_uros_base.support,
@@ -97,27 +61,6 @@ int main()
 
     /* Add timer to executor */
     rclc_executor_add_timer(&g_uros_base.executor, &g_timer);
-
-    /* Create subscriber */
-    rclc_subscription_init_best_effort(
-        &g_led_subs,
-        &g_uros_base.node,
-        ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-        "pico_led_ctrl");
-
-    /* Add subscriber to executor */
-    rclc_executor_add_subscription(&g_uros_base.executor, 
-                                   &g_led_subs, 
-                                   &g_led_msg,
-                                   &led_subscriber_callback, 
-                                   ON_NEW_DATA);
-
-    /* Create publisher */
-    rclc_publisher_init_default(
-        &g_co2_pub,
-        &g_uros_base.node,
-        ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-        "pico_co2_sensor");
 
     /* Spin */
     while (true)
