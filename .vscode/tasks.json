@@ -2,13 +2,13 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "CMake Build",
             "type": "shell",
-            "command": "cmake .. && make -j 8 && cp ./compile_commands.json ../",
+            "command": "cmake ..",
             "args": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "options": {
                 "cwd": "${workspaceFolder}/build"
@@ -16,13 +16,42 @@
             "detail": "Generated task for building the project"
         },
         {
-            "label": "clean",
+            "label": "Build",
             "type": "shell",
-            "command": "rm -rf build && mkdir build",
+            "command": "make -j 8 && cp ./compile_commands.json ../",
             "args": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "detail": "Generated task for building the project"
+        },
+        ,
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "rm pico_rmrc_uros.* && rm pico_flas_region_ld",
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "detail": "Generated task for cleaning the project"
+        }
+        {
+            "label": "Clean All",
+            "type": "shell",
+            "command": "rm -rf build && mkdir build && echo \"\" >> ./build/.gitkeep",
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
             },
             "options": {
                 "cwd": "${workspaceFolder}"
