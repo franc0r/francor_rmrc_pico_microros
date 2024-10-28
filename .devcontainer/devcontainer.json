@@ -1,10 +1,10 @@
 {
     "name": "RMRC Pi Pico Container",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": ".."
-    },
-    //"image": "vsc-rmrc-pico-ws",
+    //"build": {
+    //    "dockerfile": "Dockerfile",
+    //    "context": ".."
+    //},
+    "image": "franc0r/francor_rmrc_pico_microros:latest",
     "remoteUser": "vscode",
     "privileged": false,
     "customizations": {
